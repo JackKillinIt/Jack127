@@ -1,15 +1,15 @@
 """
-This is the final program for Jack's Intermediate Python Class. I have made a basic snake game. Nothing too
-fancy it's just the classic game of snake :3
+This is the final program for Jack's Intermediate Python Class. This program uses pygame to replicate the classic game
+of snake with a few additional features such as sound effects, music, and image files. Hope you enjoy!
 """
-# comment
+
 import pygame  # Import statements
 import random
-import time
+from pygame import time
 
 pygame.mixer.pre_init(44100, -16, 2, 2048)
 pygame.mixer.init()
-pygame.init()  # Initializes pygame
+pygame.init()  # Initializes pygame and its music mixer
 
 # Creating the display screen
 screen_width = 600
@@ -38,13 +38,13 @@ game_clock = pygame.time.Clock()
 snake_block = 10
 snake_speed = 15
 
-background_image_size = (650, 400)
+background_image_size = (600, 400)
 
 
 # Creating the snake
 def snake(snake_block, snake_list):
     for x in snake_list:
-        pygame.draw.rect(display, black, [x[0], x[1], snake_block, snake_block])
+        pygame.draw.rect(display, green, [x[0], x[1], snake_block, snake_block])
 
 
 # Keeps track of the players score as they progress through the game
@@ -65,6 +65,12 @@ def gameplay_music():
     pygame.mixer.music.play(-1)
 
 
+def game_background():
+    forest_backdrop = pygame.image.load('N_b6N3.png')
+    forest_backdrop = pygame.transform.scale(forest_backdrop, background_image_size)
+    display.blit(forest_backdrop, (0, 0))
+
+
 def lose_screen():
     loss_image = pygame.image.load('cryingEmoji.jpg')
     loss_image = pygame.transform.scale(loss_image, background_image_size)
@@ -74,13 +80,7 @@ def lose_screen():
 
 def lose_sound():
     pygame.mixer.music.stop()
-    loss_sound = pygame.mixer.Sound('6f8d9670-7510-11ed-af8f-8f836243a50f.wav')
-    pygame.mixer.Sound.play(loss_sound, 1)
-
-
-def eat_sound():
-    eating_sound = pygame.mixer.Sound('14231cd0-75d6-11ed-b8bc-27ab12e1da41.wav')
-    pygame.mixer.Sound.play(eating_sound, 0)
+    pygame.mixer.Sound.play(pygame.mixer.Sound('6f8d9670-7510-11ed-af8f-8f836243a50f.wav'), 0)
 
 
 # Loop that handles gameplay and the interactions between the player, the snake, and the snake's food
@@ -102,26 +102,25 @@ def gameplay_loop():
     food_x_pos = round(random.randrange(0, screen_width - snake_block) / 10.0) * 10.0
     food_y_pos = round(random.randrange(0, screen_height - snake_block) / 10.0) * 10.0
 
-    while not game_Over:
+    while not close_Game:
 
-        while close_Game:
+        while game_Over:
 
             lose_screen()
-            lose_sound()
             player_Score(snake_length - 1)
             pygame.display.update()
 
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_x:
-                        game_Over = True
-                        close_Game = False
+                        game_Over = False
+                        close_Game = True
                     if event.key == pygame.K_c:
                         gameplay_loop()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                game_Over = True
+                close_Game = True
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT:
                     change_in_x = snake_block
@@ -137,23 +136,24 @@ def gameplay_loop():
                     change_in_y = -snake_block
 
         if x_value >= screen_width or x_value < 0 or y_value >= screen_height or y_value < 0:
-            close_Game = True
+            lose_sound()
+            game_Over = True
         x_value += change_in_x
         y_value += change_in_y
-        display.fill(blue)
-        pygame.draw.rect(display, green, [food_x_pos, food_y_pos, snake_block, snake_block])
+        game_background()
+        pygame.draw.rect(display, red, [food_x_pos, food_y_pos, snake_block, snake_block])
         snake_head = [x_value, y_value]
         snake_list.append(snake_head)
         if len(snake_list) > snake_length:
             del snake_list[0]
 
-        if close_Game:
+        if game_Over:
             lose_sound()
 
         for x in snake_list[:-1]:
-            if x == snake_head:
-
-                close_Game = True
+            if x == snake_head:  # If the snake's head is colliding with its body you lose
+                lose_sound()
+                game_Over = True
 
         snake(snake_block, snake_list)
         player_Score(snake_length - 1)
@@ -161,7 +161,6 @@ def gameplay_loop():
         pygame.display.update()
 
         if x_value == food_x_pos and y_value == food_y_pos:
-            eat_sound()
             food_x_pos = round(random.randrange(0, screen_width - snake_block) / 10.0) * 10.0
             food_y_pos = round(random.randrange(0, screen_height - snake_block) / 10.0) * 10.0
             snake_length += 1

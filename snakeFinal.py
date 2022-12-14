@@ -5,7 +5,7 @@ of snake with a few additional features such as sound effects, music, and image 
 
 import pygame  # Import statements
 import random
-from pygame import time
+import time
 
 pygame.mixer.pre_init(44100, -16, 2, 2048)
 pygame.mixer.init()
@@ -84,14 +84,14 @@ def gameplay_loop():  # Main loop that handles gameplay, the snake, and interact
     close_Game = False
     game_Over = False
 
-    snake_list = []  # Creates list to contain all the parts of the snake's body as it grows and sets it's length to 1
+    snake_list = []  # Creates list to contain all the parts of the snake's body as it grows and sets its length to 1
     snake_length = 1
 
     x_value, y_value = screen_width / 2, screen_height / 2  # Sets snake's start position to middle of the screen
 
     change_in_x, change_in_y = 0, 0
 
-    # Places food in random position on the screen
+    # Generates food in random position on the screen
     food_x_pos = round(random.randrange(0, screen_width - block) / 10.0) * 10.0
     food_y_pos = round(random.randrange(0, screen_height - block) / 10.0) * 10.0
 
@@ -142,6 +142,8 @@ def gameplay_loop():  # Main loop that handles gameplay, the snake, and interact
 
         if len(snake_list) > snake_length:  # Deletes last snake block if list of snake blocks is > length of the snake
             del snake_list[0]
+            if len(snake_list) < snake_length:  # Test case that closes program if snake_list is working improperly
+                break
 
         for x in snake_list[:-1]:  # If snake's head collides with its body, game over
             if x == snake_head:
@@ -152,6 +154,8 @@ def gameplay_loop():  # Main loop that handles gameplay, the snake, and interact
         if x_value >= screen_width or x_value < 0 or y_value >= screen_height or y_value < 0:
             lose_sound()
             game_Over = True
+            if game_Over is not True:  # Test case that closes program if boundaries work improperly
+                break
 
         snake(block, snake_list)  # Draws snake
         player_Score(snake_length - 1)  # Displays the player's score

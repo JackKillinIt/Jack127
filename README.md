@@ -19,7 +19,7 @@ worked with pygame, but I feel much more confident with it now! Figuring out ima
 was a battle and the sound effects still give issue sometime despite everything else about the game working.
 I would like to come back at some point and implement sprites for the food and 
 the snake rather than just colored blocks and ensure the sounds are working without hindering the game's
-performance. Thank you for checking out my program!
+performance. 
 
 **How to run**
 Just install the zip with all the image and sound files off GitHub and click run there isn't anything too 
@@ -31,8 +31,9 @@ The player controls the green square (the snake) with the arrow keys using up do
 it around the screen. The goal is to eat as many of the red food blocks as possible without running into 
 the boundaries of the screen, or colliding with the snakes body as every piece of food it eats causes the 
 snake to grow longer. If the game ends, you can either press C to play again, or you can press X (or click
-the X in the top right) to close the game. (Reference the screenshot below)
-![img_1.png](img_1.png)
+the X in the top right) to close the game. (Reference the screenshot below: img_1 is gameplay screen, img is loss 
+screen)
+![img_1.png](img_1.png)![img.png](img.png)
 
 **Credits**
 Professor Salu for teaching me Python
